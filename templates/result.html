@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Analysis Result</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Resume Analysis Result</h1>
+
+<h2>Resume Skills Detected</h2>
+
+<ul>
+{% for skill in resume_skills %}
+<li>{{ skill }}</li>
+{% endfor %}
+</ul>
+
+
+<h2>Matched Skills</h2>
+
+<ul>
+{% for skill in matched_skills %}
+<li>{{ skill }}</li>
+{% endfor %}
+</ul>
+
+
+<h2>Missing Skills</h2>
+
+<ul>
+{% for skill in missing_skills %}
+<li>{{ skill }}</li>
+{% endfor %}
+</ul>
+
+
+<h2>Compatibility Score</h2>
+
+<p class="score">{{ similarity }} %</p>
+
+
+<h2>Skill Match Chart</h2>
+
+<img src="{{ chart }}" width="300">
+
+<br><br>
+
+<a href="/">Analyze Another Resume</a>
+
+</div>
+
+</body>
+</html>
