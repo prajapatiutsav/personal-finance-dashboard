@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request, redirect
-from analytics import *
+import finance_analytics as analytics
 
 app = Flask(__name__)
 
@@ -7,17 +7,18 @@ app = Flask(__name__)
 @app.route("/")
 def home():
 
-    df = load_data()
+    df = analytics.load_data()
 
-    total = total_expense(df)
-    avg = average_expense(df)
-    category = category_expense(df)
-    prediction = predict_expense(df)
-    transactions = recent_transactions(df)
+    month_total = analytics.monthly_expense(df)
+    week_total = analytics.weekly_expense(df)
+    avg = analytics.average_expense(df)
+    prediction = analytics.predict_expense(df)
+    transactions = analytics.recent_transactions(df)
 
     return render_template(
         "index.html",
-        total=total,
+        month_total=month_total,
+        week_total=week_total,
         avg=avg,
         prediction=prediction,
         transactions=transactions
@@ -27,9 +28,9 @@ def home():
 @app.route("/data")
 def data():
 
-    df = load_data()
+    df = analytics.load_data()
 
-    category = category_expense(df)
+    category = analytics.category_expense(df)
 
     return jsonify(category)
 
@@ -41,7 +42,18 @@ def add():
     category = request.form["category"]
     amount = request.form["amount"]
 
-    add_expense(date, category, amount)
+    analytics.add_expense(date, category, amount)
+
+    return redirect("/")
+
+
+@app.route("/clear", methods=["POST"])
+def clear_data():
+
+    import json
+
+    with open("data.json", "w") as file:
+        json.dump([], file)
 
     return redirect("/")
 
